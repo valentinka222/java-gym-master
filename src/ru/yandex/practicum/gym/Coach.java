@@ -5,11 +5,11 @@ import java.util.Objects;
 public class Coach {
 
     //фамилия
-    private String surname;
+    private final String surname;
     //имя
-    private String name;
+    private final String name;
     //отчество
-    private String middleName;
+    private final String middleName;
 
     public Coach(String surname, String name, String middleName) {
         this.surname = surname;
@@ -22,7 +22,8 @@ public class Coach {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Coach coach = (Coach) o;
-        return Objects.equals(surname, coach.surname) && Objects.equals(name, coach.name) && Objects.equals(middleName, coach.middleName);
+        return Objects.equals(surname, coach.surname) && Objects.equals(name, coach.name)
+                && Objects.equals(middleName, coach.middleName);
     }
 
     @Override
