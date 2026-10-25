@@ -1,6 +1,7 @@
 package ru.yandex.practicum.gym;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class TimetableTest {
     }
 
     @Test
+    @DisplayName("Одна тренировка: возвращается за свой день, другой - пуст")
     void testGetTrainingSessionsForDaySingleSession() {
         TrainingSession singleTrainingSession = new TrainingSession(childGroup, coach, DayOfWeek.MONDAY, new TimeOfDay(13, 0));
 
@@ -36,6 +38,7 @@ public class TimetableTest {
     }
 
     @Test
+    @DisplayName("Несколько тренировок: за день возвращаются в порядке времени начала")
     void testGetTrainingSessionsForDayMultipleSessions() {
         Group groupAdult = new Group("Акробатика для взрослых", Age.ADULT, 90);
         TrainingSession thursdayAdultTrainingSession = new TrainingSession(groupAdult, coach, DayOfWeek.THURSDAY, new TimeOfDay(20, 0));
@@ -67,6 +70,7 @@ public class TimetableTest {
     }
 
     @Test
+    @DisplayName("Поиск по дню и времени: находит тренировку, для другого времени пусто")
     void testGetTrainingSessionsForDayAndTime() {
         TrainingSession singleTrainingSession = createSession(DayOfWeek.MONDAY, 13, 0);
         timetable.addNewTrainingSession(singleTrainingSession);
@@ -79,8 +83,8 @@ public class TimetableTest {
         assertEquals(0, timetable.getTrainingSessionsForDayAndTime(DayOfWeek.MONDAY, time14).size());
     }
 
-
     @Test
+    @DisplayName("Несколько тренировок в одно время")
     void testGetTrainingSessionsForDayAndTimeMultipleSessionsAtSameTime() {
         TimeOfDay time = new TimeOfDay(18, 0);
 
@@ -100,6 +104,7 @@ public class TimetableTest {
     }
 
     @Test
+    @DisplayName("Тренировки сортируются по времени")
     void testTrainingSessionsSortedByTimeWhenAddedInRandomOrder() {
         TrainingSession first = createSession(DayOfWeek.MONDAY, 18, 0);
         TrainingSession second = createSession(DayOfWeek.MONDAY, 9, 0);
@@ -126,6 +131,7 @@ public class TimetableTest {
     }
 
     @Test
+    @DisplayName("Битая тренировка не добавляется")
     void testInvalidTrainingSessionsAreNotAdded() {
         TrainingSession first = new TrainingSession(childGroup, null, DayOfWeek.MONDAY, new TimeOfDay(10, 0));
         TrainingSession second = new TrainingSession(childGroup, coach, DayOfWeek.MONDAY, null);
@@ -138,6 +144,7 @@ public class TimetableTest {
     }
 
     @Test
+    @DisplayName("Тренеры отсортированы по количеству тренировок по убыванию")
     void testGetCountByCoachesSortedDescending() {
         Coach coachA = new Coach("A", "A", "A");
         Coach coachB = new Coach("B", "B", "B");
@@ -172,6 +179,7 @@ public class TimetableTest {
     }
 
     @Test
+    @DisplayName("Тренер с одинаковым ФИО - один человек")
     void testGetCountByCoachesSameCoachCreatedTwice() {
         Group group1 = new Group("Тренировка 1", Age.CHILD, 50);
         Group group2 = new Group("Тренировка 2", Age.ADULT, 60);
@@ -189,6 +197,7 @@ public class TimetableTest {
     }
 
     @Test
+    @DisplayName("Учитываются все тренировки тренера во всем расписании")
     void testGetCountByCoachesCountsAllSessionsOfCoach() {
         Group group1 = new Group("Тренировка 1", Age.CHILD, 50);
         Group group2 = new Group("Тренировка 2", Age.ADULT, 60);

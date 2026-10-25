@@ -5,6 +5,7 @@ import java.util.*;
 public class Timetable {
 
     private final Map<DayOfWeek, Map<TimeOfDay, List<TrainingSession>>> timetable = new HashMap<>();
+    private final Map<Coach, Integer> coachesCounter = new HashMap<>();
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
         if (trainingSession == null
@@ -17,19 +18,14 @@ public class Timetable {
         DayOfWeek dayOfWeek = trainingSession.getDayOfWeek();
         TimeOfDay timeOfDay = trainingSession.getTimeOfDay();
 
-        Map<TimeOfDay, List<TrainingSession>> sessionByTime = timetable.get(dayOfWeek);
-        if (sessionByTime == null) {
-            sessionByTime = new TreeMap<>();
-            timetable.put(dayOfWeek, sessionByTime);
-        }
+        Map<TimeOfDay, List<TrainingSession>> sessionByTime = timetable.computeIfAbsent(dayOfWeek,
+                k -> new TreeMap<>());
 
-        List<TrainingSession> sessions = sessionByTime.get(timeOfDay);
-        if (sessions == null) {
-            sessions = new ArrayList<>();
-            sessionByTime.put(timeOfDay, sessions);
-        }
+        List<TrainingSession> sessions = sessionByTime.computeIfAbsent(timeOfDay, k -> new ArrayList<>());
 
         sessions.add(trainingSession);
+        Coach coach = trainingSession.getCoach();
+        coachesCounter.put(coach, coachesCounter.getOrDefault(coach, 0) + 1);
     }
 
     public Map<TimeOfDay, List<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
@@ -56,22 +52,8 @@ public class Timetable {
     }
 
     public List<CounterOfTrainings> getCountByCoaches() {
-        Map<Coach, Integer> coaches = new HashMap<>();
-        for (Map<TimeOfDay, List<TrainingSession>> sessionsByTime : timetable.values()) {
-            for (List<TrainingSession> sessions : sessionsByTime.values()) {
-                for (TrainingSession session : sessions) {
-                    Coach coach = session.getCoach();
-                    Integer count = coaches.get(coach);
-                    if (count == null) {
-                        coaches.put(coach, 1);
-                    } else {
-                        coaches.put(coach, count + 1);
-                    }
-                }
-            }
-        }
         List<CounterOfTrainings> counter = new ArrayList<>();
-        for (Map.Entry<Coach, Integer> entry : coaches.entrySet()) {
+        for (Map.Entry<Coach, Integer> entry : coachesCounter.entrySet()) {
             counter.add(new CounterOfTrainings(entry.getKey(), entry.getValue()));
         }
         Collections.sort(counter);
